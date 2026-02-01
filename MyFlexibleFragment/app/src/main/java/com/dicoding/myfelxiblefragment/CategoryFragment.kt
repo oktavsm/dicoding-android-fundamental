@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import com.dicoding.myfelxiblefragment.R
 
 class CategoryFragment : Fragment(), View.OnClickListener {
@@ -33,10 +34,10 @@ class CategoryFragment : Fragment(), View.OnClickListener {
             detailCategoryFragment.description = description
 
             val fragmentManager = parentFragmentManager
-            fragmentManager.beginTransaction().apply {
-                replace(R.id.frame_container, detailCategoryFragment, DetailCategoryFragment::class.java.simpleName)
+            fragmentManager.commit {
                 addToBackStack(null)
-                commit()
+                replace(R.id.frame_container, detailCategoryFragment, DetailCategoryFragment::class.java.simpleName)
+            }
 
             }
         }
