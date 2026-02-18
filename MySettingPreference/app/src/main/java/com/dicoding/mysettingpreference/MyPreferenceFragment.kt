@@ -1,59 +1,85 @@
 package com.dicoding.mysettingpreference
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.preference.CheckBoxPreference
+import androidx.preference.EditTextPreference
+import androidx.preference.PreferenceFragmentCompat
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [MyPreferenceFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class MyPreferenceFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+class MyPreferenceFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
+    private lateinit var NAME: String
+    private lateinit var EMAIL: String
+    private lateinit var AGE: String
+    private lateinit var PHONE: String
+    private lateinit var LOVE: String
+    private lateinit var namePreference: EditTextPreference
+    private lateinit var emailPreference: EditTextPreference
+    private lateinit var agePreference: EditTextPreference
+    private lateinit var phonePreference: EditTextPreference
+    private lateinit var isLoveMuPreference: CheckBoxPreference
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override fun onCreatePreferences(bundle: Bundle?, s: String?) {
+        addPreferencesFromResource(R.xml.preferences)
+        init()
+        setSummaries()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        preferenceScreen.sharedPreferences?.registerOnSharedPreferenceChangeListener(this)
+    }
+    override fun onPause() {
+        super.onPause()
+        preferenceScreen.sharedPreferences?.unregisterOnSharedPreferenceChangeListener(this)
+    }
+
+    override fun onSharedPreferenceChanged(sf: SharedPreferences?, key: String?) {
+        if(key==NAME){
+            namePreference.summary = sf?.getString(NAME, DEFAULT_VALUE)
+        }
+        if(key==EMAIL){
+            emailPreference.summary = sf?.getString(EMAIL, DEFAULT_VALUE)
+        }
+        if (key == AGE) {
+            agePreference.summary = sf?.getString(AGE, DEFAULT_VALUE)
+        }
+        if (key == PHONE) {
+            phonePreference.summary = sf?.getString(PHONE, DEFAULT_VALUE)
+        }
+        if (key == LOVE) {
+            isLoveMuPreference.isChecked = sf?.getBoolean(LOVE, false) == true
         }
     }
-
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_preference, container, false)
+    private fun setSummaries() {
+        val sh = preferenceManager.sharedPreferences
+        namePreference.summary = sh?.getString(NAME, DEFAULT_VALUE)
+        emailPreference.summary = sh?.getString(EMAIL, DEFAULT_VALUE)
+        agePreference.summary = sh?.getString(AGE, DEFAULT_VALUE)
+        phonePreference.summary = sh?.getString(PHONE, DEFAULT_VALUE)
+        isLoveMuPreference.isChecked = sh?.getBoolean(LOVE, false) == true
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MyPreferenceFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            MyPreferenceFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun init() {
+        NAME = resources.getString(R.string.key_name)
+        EMAIL = resources.getString(R.string.key_email)
+        AGE = resources.getString(R.string.key_age)
+        PHONE = resources.getString(R.string.key_phone)
+        LOVE = resources.getString(R.string.key_love)
+        namePreference = findPreference<EditTextPreference> (NAME) as EditTextPreference
+        emailPreference = findPreference<EditTextPreference>(EMAIL) as EditTextPreference
+        agePreference = findPreference<EditTextPreference>(AGE) as EditTextPreference
+        phonePreference = findPreference<EditTextPreference>(PHONE) as EditTextPreference
+        isLoveMuPreference = findPreference<CheckBoxPreference>(LOVE) as CheckBoxPreference
     }
+
+    companion object{
+        private const val DEFAULT_VALUE = "Tidak Ada"
+
+    }
+
 }
