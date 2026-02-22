@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
         binding.rvNotes.layoutManager = LinearLayoutManager(this)
         binding.rvNotes.setHasFixedSize(true)
 
-        adapter = NoteAdapter(object : OnItemClickCallback {
+        adapter = NoteAdapter(object : NoteAdapter.OnItemClickCallback {
             override fun onItemClicked(selectedNote: Note?, position: Int?) {
                 val intent = Intent(this@MainActivity, NoteAddUpdateActivity::class.java)
                 intent.putExtra(NoteAddUpdateActivity.EXTRA_NOTE, selectedNote)
